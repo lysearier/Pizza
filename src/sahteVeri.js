@@ -1,0 +1,15 @@
+export const malzemeler = [
+  { name: "Pepperoni", label: "Pepperoni" },
+  { name: "Sosis", label: "Sosis" },
+  { name: "Kanada Jambonu", label: "Kanada Jambonu" },
+  { name: "Tavuk Izgara", label: "Tavuk Izgara" },
+  { name: "Soğan", label: "Soğan" },
+  { name: "Ananas", label: "Ananas" },
+  { name: "Domates", label: "Domates" },
+  { name: "Kabak", label: "Kabak" },
+  { name: "Mısır", label: "Mısır" },
+  { name: "Sucuk", label: "Sucuk" },
+  { name: "Jalepeno", label: "Jalepeno" },
+  { name: "Sarımsak", label: "Sarımsak" },
+  { name: "Biber", label: "Biber" },
+];
