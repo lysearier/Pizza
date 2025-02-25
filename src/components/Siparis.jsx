@@ -85,7 +85,7 @@ export default function Siparis() {
         <div className='ekMalzemeler'>
           <FormGroup>
             <Label for='ekMalzemeler'>Ek Malzemeler</Label>
-            <FormText for='ekMalzemeler'>En fazla 10 malzeme seçebilirsiniz. 5₺</FormText>
+            <FormText htmlFor='ekMalzemeler'>En fazla 10 malzeme seçebilirsiniz. 5₺</FormText>
             <div className="material-columns">
               {malzemeler.map((malzeme) => (
                 <div className="material-item" key={malzeme.name}>
@@ -102,7 +102,7 @@ export default function Siparis() {
 
         <div className='isimSoyisim'>
           <FormGroup className="form-text-area">
-            <Label for="isimSoyisim">İsim-Soyisim<span>*</span> </Label>
+            <Label htmlFor="isimSoyisim">İsim-Soyisim<span>*</span> </Label>
             <Input
               id="isimSoyisim"
               name="isimSoyisim"
