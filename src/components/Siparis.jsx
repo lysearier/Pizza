@@ -7,11 +7,104 @@ import {
   Input,
   Button,
   FormText,
+  FormFeedback,
 } from "reactstrap";
 import logo from "/images/iteration-1-images/logo.svg";
 import { malzemeler } from '../sahteVeri';
+import axios from 'axios';
+
+const initialValues = {
+  boyut: '',
+  hamur: '',
+  malzemeler: [],
+  isimSoyisim: '',
+  siparisNotu: ''
+}
+
+const errorMessages = {
+  boyut: "* Boyut seçimi zorunludur.",
+  hamur: "* Hamur seçimi zorunludur.",
+  isimSoyisim: "* İsim ve soyisim girilmelidir.",
+  malzemeler: "* En az 4, en fazla 10 malzeme seçebilirsiniz.",
+};
+
 
 export default function Siparis() {
+  const [formData, setFormData] = useState(initialValues);
+  const [count, setCount] = useState(1);
+  const [errors, setErrors] = useState({});
+  const [isValid, setIsValid] = useState(false);
+  const history = useHistory();
+
+  const handleIncrement = () => {
+    setCount(count + 1);
+  }
+
+  const handleDecrement = () => {
+    if (count > 1) {
+      setCount(count - 1);
+    }
+  }
+
+  const toplamHesap = () => {
+    const malzemeUcreti = formData.malzemeler.length * 5;
+    return (100 + malzemeUcreti) * count; 
+  };
+  
+
+  useEffect(() => {
+    validateForm();
+  }, [formData]);
+
+
+  const validateForm = () => {
+    let newErrors = {};
+    if (!formData.boyut) newErrors.boyut = errorMessages.boyut;
+    if (!formData.hamur) newErrors.hamur = errorMessages.hamur;
+    if (!formData.isimSoyisim || formData.isimSoyisim.length < 3) newErrors.isimSoyisim = errorMessages.isimSoyisim;
+    if (formData.malzemeler.length < 4 || formData.malzemeler.length > 10) newErrors.malzemeler = errorMessages.malzemeler;
+    setErrors(newErrors);
+    setIsValid(Object.keys(newErrors).length === 0);
+  }
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    if (type === 'checkbox') {
+      const updatedMalzemeler = checked
+        ? [...formData.malzemeler, value]
+        : formData.malzemeler.filter(item => item !== value);
+      setFormData({ ...formData, malzemeler: updatedMalzemeler });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    if (!isValid) {
+      return;
+    }
+
+    const payload = {
+      isim: formData.isimSoyisim,
+      boyut: formData.boyut,
+      malzemeler: formData.malzemeler,
+      özel: formData.siparisNotu,
+    };
+
+    axios.post('https://reqres.in/api/pizza', payload)
+      .then(response => {
+        console.log('Sipariş başarıyla oluşturuldu:', response);
+        console.log('Sipariş Özeti:', response.data);
+        history.push('/Onay');
+      })
+      .catch(error => {
+        console.error('Sipariş gönderilirken bir hata oluştu:', error);
+      });
+  }
+
+
   return (
     <>
       <header className="form-header">
@@ -42,13 +135,15 @@ export default function Siparis() {
         </div>
       </div>
 
-      <Form>
+      <Form onSubmit={handleSubmit}>
         <FormGroup>
           <Label>Boyut Seç<span>*</span></Label>
           <FormGroup check>
             <Input
               name='boyut'
               type='radio'
+              value="Küçük"
+              onChange={handleChange}
             />
             <Label check> Küçük</Label>
           </FormGroup>
@@ -56,6 +151,8 @@ export default function Siparis() {
             <Input
               name='boyut'
               type='radio'
+              value="Orta"
+              onChange={handleChange}
             />
             <Label check> Orta</Label>
           </FormGroup>
@@ -63,40 +160,48 @@ export default function Siparis() {
             <Input
               name='boyut'
               type='radio'
+              value="Büyük"
+              onChange={handleChange}
             />
             <Label check> Büyük</Label>
           </FormGroup>
+          {errors.boyut && <FormFeedback>{errors.boyut}</FormFeedback>}
         </FormGroup>
 
         <FormGroup>
-          <Label for="hamurKalinligi">Hamur Seç<span>*</span></Label>
+          <Label htmlFor="hamurKalinligi">Hamur Seç<span>*</span></Label>
           <Input
             id='hamurKalinligi'
             name="hamur"
             type="select"
+            onChange={handleChange}
           >
             <option value="">Hamur Kalınlığı Seç</option>
             <option value="İnce">İnce</option>
             <option value="Orta">Orta</option>
             <option value="Kalın">Kalın</option>
           </Input>
+          {errors.hamur && <FormFeedback>{errors.hamur}</FormFeedback>}
         </FormGroup>
 
         <div className='ekMalzemeler'>
           <FormGroup>
-            <Label for='ekMalzemeler'>Ek Malzemeler</Label>
-            <FormText htmlFor='ekMalzemeler'>En fazla 10 malzeme seçebilirsiniz. 5₺</FormText>
+            <Label htmlFor='ekMalzemeler'>Ek Malzemeler<span>*</span></Label>
+            <FormText htmlFor='ekMalzemeler'>En az 4, en fazla 10 malzeme seçebilirsiniz. 5₺</FormText>
             <div className="material-columns">
               {malzemeler.map((malzeme) => (
                 <div className="material-item" key={malzeme.name}>
                   <Input
                     type="checkbox"
                     name={malzeme.name}
+                    value={malzeme.name}
+                    onChange={handleChange}
                   />
                   <Label check>{malzeme.label}</Label>
                 </div>
               ))}
             </div>
+            {errors.malzemeler && <FormFeedback>{errors.malzemeler}</FormFeedback>}
           </FormGroup>
         </div>
 
@@ -108,7 +213,10 @@ export default function Siparis() {
               name="isimSoyisim"
               placeholder="Lütfen isminizi giriniz"
               type="text"
+              value={formData.isimSoyisim}
+              onChange={handleChange}
             />
+            {errors.isimSoyisim && <FormFeedback>{errors.isimSoyisim}</FormFeedback>}
           </FormGroup>
         </div>
 
@@ -120,24 +228,25 @@ export default function Siparis() {
               name="siparisNotu"
               placeholder="Siparişine eklemek istediğin bir not var mı?"
               type="text"
+              value={formData.siparisNotu}
+              onChange={handleChange}
             />
           </FormGroup>
         </div>
 
         <div className="order-summary">
           <div className="order-summary-quantity">
-            <Button >-</Button>
-            <span>0</span>
-            <Button>+</Button>
+            <Button onClick={handleDecrement}>-</Button>
+            <span> {count} </span>
+            <Button onClick={handleIncrement}>+</Button>
           </div>
           <div className="order-summary-card">
             <h5>Sipariş Toplamı</h5>
-            <p>Seçimler: 10₺</p>
-            <p>Toplam: 25₺</p>
+            <p>Seçimler: {formData.malzemeler.length * 5}₺</p>
+            <p>Toplam: {toplamHesap()}₺</p>
           </div>
         </div>
         <Button className="order-submit-button">Sipariş Ver</Button>
-
       </Form>
     </>
   );
