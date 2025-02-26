@@ -112,7 +112,7 @@ export default function Siparis() {
   }
 
   return (
-    <>
+    <main>
       <header className="form-header">
         <img src={logo} />
       </header>
@@ -140,127 +140,129 @@ export default function Siparis() {
           </nav>
         </div>
       </div>
-
-      <Form onSubmit={handleSubmit}>
-        <FormGroup>
-          <Label>Boyut Seç<span>*</span></Label>
-          <FormGroup check>
-            <Input
-              name='boyut'
-              type='radio'
-              value="Küçük"
-              onChange={handleChange}
-            />
-            <Label check> Küçük</Label>
-          </FormGroup>
-          <FormGroup check>
-            <Input
-              name='boyut'
-              type='radio'
-              value="Orta"
-              onChange={handleChange}
-            />
-            <Label check> Orta</Label>
-          </FormGroup>
-          <FormGroup check>
-            <Input
-              name='boyut'
-              type='radio'
-              value="Büyük"
-              onChange={handleChange}
-            />
-            <Label check> Büyük</Label>
-          </FormGroup>
-          {errors.boyut && <FormFeedback>{errors.boyut}</FormFeedback>}
-        </FormGroup>
-
-        <FormGroup>
-          <Label htmlFor="hamurKalinligi">Hamur Seç<span>*</span></Label>
-          <Input
-            id='hamurKalinligi'
-            name="hamur"
-            type="select"
-            onChange={handleChange}
-          >
-            <option value="">Hamur Kalınlığı Seç</option>
-            <option value="İnce">İnce</option>
-            <option value="Orta">Orta</option>
-            <option value="Kalın">Kalın</option>
-          </Input>
-          {errors.hamur && <FormFeedback>{errors.hamur}</FormFeedback>}
-        </FormGroup>
-
-        <div className='ekMalzemeler'>
+      <div className="siparis-form-container">
+        <Form onSubmit={handleSubmit} className='abc'>
           <FormGroup>
-            <Label htmlFor='ekMalzemeler'>Ek Malzemeler<span>*</span></Label>
-            <FormText htmlFor='ekMalzemeler'>En az 4, en fazla 10 malzeme seçebilirsiniz. 5₺</FormText>
-            <div className="material-columns">
-              {malzemeler.map((malzeme) => {
-                const isChecked = formData.malzemeler.includes(malzeme.name);
-                const isDisabled = !isChecked && formData.malzemeler.length >= 10;
+            <Label>Boyut Seç<span>*</span></Label>
+            <FormGroup check>
+              <Input
+                name='boyut'
+                type='radio'
+                value="Küçük"
+                onChange={handleChange}
+              />
+              <Label check> Küçük</Label>
+            </FormGroup>
+            <FormGroup check>
+              <Input
+                name='boyut'
+                type='radio'
+                value="Orta"
+                onChange={handleChange}
+              />
+              <Label check> Orta</Label>
+            </FormGroup>
+            <FormGroup check>
+              <Input
+                name='boyut'
+                type='radio'
+                value="Büyük"
+                onChange={handleChange}
+              />
+              <Label check> Büyük</Label>
+            </FormGroup>
+            {errors.boyut && <FormFeedback>{errors.boyut}</FormFeedback>}
+          </FormGroup>
 
-                return (
-                  <div className="material-item" key={malzeme.name}>
-                    <Input
-                      type="checkbox"
-                      name="malzemeler"
-                      value={malzeme.name}
-                      checked={isChecked}
-                      onChange={handleChange}
-                      disabled={isDisabled}
-                    />
-                    <Label check>{malzeme.label}</Label>
-                  </div>
-                );
-              })}
+          <FormGroup>
+            <Label htmlFor="hamurKalinligi">Hamur Seç<span>*</span></Label>
+            <Input
+              id='hamurKalinligi'
+              name="hamur"
+              type="select"
+              onChange={handleChange}
+            >
+              <option value="">Hamur Kalınlığı Seç</option>
+              <option value="İnce">İnce</option>
+              <option value="Orta">Orta</option>
+              <option value="Kalın">Kalın</option>
+            </Input>
+            {errors.hamur && <FormFeedback>{errors.hamur}</FormFeedback>}
+          </FormGroup>
+
+          <div className='ekMalzemeler'>
+            <FormGroup>
+              <Label htmlFor='ekMalzemeler'>Ek Malzemeler<span>*</span></Label>
+              <FormText htmlFor='ekMalzemeler'>En az 4, en fazla 10 malzeme seçebilirsiniz. 5₺</FormText>
+              <div className="material-columns">
+                {malzemeler.map((malzeme) => {
+                  const isChecked = formData.malzemeler.includes(malzeme.name);
+                  const isDisabled = !isChecked && formData.malzemeler.length >= 10;
+
+                  return (
+                    <div className="material-item" key={malzeme.name}>
+                      <Input
+                        type="checkbox"
+                        name="malzemeler"
+                        value={malzeme.name}
+                        checked={isChecked}
+                        onChange={handleChange}
+                        disabled={isDisabled}
+                      />
+                      <Label check>{malzeme.label}</Label>
+                    </div>
+                  );
+                })}
+              </div>
+              {errors.malzemeler && <FormFeedback>{errors.malzemeler}</FormFeedback>}
+            </FormGroup>
+          </div>
+
+          <div className='isimSoyisim'>
+            <FormGroup className="form-text-area">
+              <Label htmlFor="isimSoyisim">İsim-Soyisim<span>*</span> </Label>
+              <Input
+                id="isimSoyisim"
+                name="isimSoyisim"
+                placeholder="Lütfen isminizi giriniz"
+                type="text"
+                value={formData.isimSoyisim}
+                onChange={handleChange}
+              />
+              {errors.isimSoyisim && <FormFeedback>{errors.isimSoyisim}</FormFeedback>}
+            </FormGroup>
+          </div>
+
+          <div className='siparisNotu'>
+            <FormGroup className="form-text-area">
+              <Label for="siparisNotu">Sipariş Notu</Label>
+              <Input
+                id="siparisNotu"
+                name="siparisNotu"
+                placeholder="Siparişine eklemek istediğin bir not var mı?"
+                type="text"
+                value={formData.siparisNotu}
+                onChange={handleChange}
+              />
+            </FormGroup>
+          </div>
+
+          <div className="order-summary">
+            <div className="order-summary-quantity">
+              <Button onClick={handleDecrement}>-</Button>
+              <span> {count} </span>
+              <Button onClick={handleIncrement}>+</Button>
             </div>
-            {errors.malzemeler && <FormFeedback>{errors.malzemeler}</FormFeedback>}
-          </FormGroup>
-        </div>
-
-        <div className='isimSoyisim'>
-          <FormGroup className="form-text-area">
-            <Label htmlFor="isimSoyisim">İsim-Soyisim<span>*</span> </Label>
-            <Input
-              id="isimSoyisim"
-              name="isimSoyisim"
-              placeholder="Lütfen isminizi giriniz"
-              type="text"
-              value={formData.isimSoyisim}
-              onChange={handleChange}
-            />
-            {errors.isimSoyisim && <FormFeedback>{errors.isimSoyisim}</FormFeedback>}
-          </FormGroup>
-        </div>
-
-        <div className='siparisNotu'>
-          <FormGroup className="form-text-area">
-            <Label for="siparisNotu">Sipariş Notu</Label>
-            <Input
-              id="siparisNotu"
-              name="siparisNotu"
-              placeholder="Siparişine eklemek istediğin bir not var mı?"
-              type="text"
-              value={formData.siparisNotu}
-              onChange={handleChange}
-            />
-          </FormGroup>
-        </div>
-
-        <div className="order-summary">
-          <div className="order-summary-quantity">
-            <Button onClick={handleDecrement}>-</Button>
-            <span> {count} </span>
-            <Button onClick={handleIncrement}>+</Button>
+            <div className="order-summary-card">
+              <h5>Sipariş Toplamı</h5>
+              <p>Seçimler: {formData.malzemeler.length * 5}₺</p>
+              <p>Toplam: {toplamHesap()}₺</p>
+            </div>
+            <Button className="order-submit-button" disabled={!isValid}>Sipariş Ver</Button>
           </div>
-          <div className="order-summary-card">
-            <h5>Sipariş Toplamı</h5>
-            <p>Seçimler: {formData.malzemeler.length * 5}₺</p>
-            <p>Toplam: {toplamHesap()}₺</p>
-          </div>
-        </div>
-        <Button className="order-submit-button" disabled={!isValid}>Sipariş Ver</Button>
-      </Form>
-    </>
+          
+        </Form>
+      </div>
+    </main>
   );
 }

@@ -41,7 +41,131 @@
 }
 
 
+.form-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #ce2829;
+  padding: 20px;
+  text-align: center;
+  
+}
 
-.form-header{
-  background-color: #CE2829;
+.form-header img {
+  max-width: 150px;
+}
+
+.siparis-alani-container {
+  display: flex;
+  justify-content: center;
+  background-color: #FAF7F2;
+  margin-top: 20px;
+}
+
+.siparis-alani-content {
+  margin: 0;
+  padding: 0;
+  width: 70%;
+  border-radius: 8px;
+  width: 532px;
+}
+
+
+.nav-menu a {
+  text-decoration: none;
+  color: #292929;
+  font-weight: bold;
+}
+
+.pizza-bilgi {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  
+}
+
+.pizza-bilgi h1 {
+  color: #333;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.pizza-bilgi p {
+  color: #666;
+}
+
+form {
+  margin-top: 20px;
+}
+.abc{
+  display: block;
+  width: 532px;
+}
+
+label {
+  font-weight: bold;
+  color: #333;
+}
+
+input[type='text'], select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.material-columns {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.material-item label {
+  cursor: pointer;
+}
+
+.order-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  background: #eeeeee;
+  padding: 15px;
+  border-radius: 6px;
+}
+
+.order-summary-card h5 {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.order-summary-quantity button, .order-submit-button {
+  background-color: #ffca28;
+  border: none;
+  padding: 10px 15px;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+
+
+.order-summary-quantity button:hover, .order-submit-button:hover {
+  background-color: #ffb300;
+}
+
+
+.siparis-form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px; 
+  background-color: #FAF7F2;
+}
+
+.siparis-form {
+  width: 532px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
