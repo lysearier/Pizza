@@ -28,7 +28,6 @@ const errorMessages = {
   malzemeler: "* En az 4, en fazla 10 malzeme seçebilirsiniz.",
 };
 
-
 export default function Siparis() {
   const [formData, setFormData] = useState(initialValues);
   const [count, setCount] = useState(1);
@@ -48,14 +47,12 @@ export default function Siparis() {
 
   const toplamHesap = () => {
     const malzemeUcreti = formData.malzemeler.length * 5;
-    return (100 + malzemeUcreti) * count; 
+    return (100 + malzemeUcreti) * count;
   };
-  
 
   useEffect(() => {
     validateForm();
   }, [formData]);
-
 
   const validateForm = () => {
     let newErrors = {};
@@ -69,14 +66,22 @@ export default function Siparis() {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    if (type === 'checkbox') {
-      const updatedMalzemeler = checked
-        ? [...formData.malzemeler, value]
-        : formData.malzemeler.filter(item => item !== value);
-      setFormData({ ...formData, malzemeler: updatedMalzemeler });
-    } else {
-      setFormData({ ...formData, [name]: value });
-    }
+
+    setFormData((prevState) => {
+      if (type === 'checkbox') {
+        if (checked && prevState.malzemeler.length >= 10) return prevState;
+
+        const newMalzemeler = checked
+          ? [...prevState.malzemeler, value]
+          : prevState.malzemeler.filter((item) => item !== value);
+
+        if (newMalzemeler.length === prevState.malzemeler.length) return prevState;
+
+        return { ...prevState, malzemeler: newMalzemeler };
+      }
+
+      return { ...prevState, [name]: value };
+    });
   };
 
   const handleSubmit = (event) => {
@@ -88,6 +93,7 @@ export default function Siparis() {
 
     const payload = {
       isim: formData.isimSoyisim,
+      hamur: formData.hamur,
       boyut: formData.boyut,
       malzemeler: formData.malzemeler,
       özel: formData.siparisNotu,
@@ -96,14 +102,14 @@ export default function Siparis() {
     axios.post('https://reqres.in/api/pizza', payload)
       .then(response => {
         console.log('Sipariş başarıyla oluşturuldu:', response);
-        console.log('Sipariş Özeti:', response.data);
+        setFormData(initialValues);
+        setCount(1);
         history.push('/Onay');
       })
       .catch(error => {
         console.error('Sipariş gönderilirken bir hata oluştu:', error);
       });
   }
-
 
   return (
     <>
@@ -119,7 +125,7 @@ export default function Siparis() {
             <a href="/siparis-olustur"> Sipariş Oluştur</a>
             <h2>Position Absolute Acı Pizza</h2>
             <div className="pizza-bilgi">
-              <h1>85.5 ₺</h1>
+              <h1>100 ₺</h1>
               <p>4.9</p>
               <p>(200)</p>
             </div>
@@ -189,17 +195,24 @@ export default function Siparis() {
             <Label htmlFor='ekMalzemeler'>Ek Malzemeler<span>*</span></Label>
             <FormText htmlFor='ekMalzemeler'>En az 4, en fazla 10 malzeme seçebilirsiniz. 5₺</FormText>
             <div className="material-columns">
-              {malzemeler.map((malzeme) => (
-                <div className="material-item" key={malzeme.name}>
-                  <Input
-                    type="checkbox"
-                    name={malzeme.name}
-                    value={malzeme.name}
-                    onChange={handleChange}
-                  />
-                  <Label check>{malzeme.label}</Label>
-                </div>
-              ))}
+              {malzemeler.map((malzeme) => {
+                const isChecked = formData.malzemeler.includes(malzeme.name);
+                const isDisabled = !isChecked && formData.malzemeler.length >= 10;
+
+                return (
+                  <div className="material-item" key={malzeme.name}>
+                    <Input
+                      type="checkbox"
+                      name="malzemeler"
+                      value={malzeme.name}
+                      checked={isChecked}
+                      onChange={handleChange}
+                      disabled={isDisabled}
+                    />
+                    <Label check>{malzeme.label}</Label>
+                  </div>
+                );
+              })}
             </div>
             {errors.malzemeler && <FormFeedback>{errors.malzemeler}</FormFeedback>}
           </FormGroup>
@@ -246,7 +259,7 @@ export default function Siparis() {
             <p>Toplam: {toplamHesap()}₺</p>
           </div>
         </div>
-        <Button className="order-submit-button">Sipariş Ver</Button>
+        <Button className="order-submit-button" disabled={!isValid}>Sipariş Ver</Button>
       </Form>
     </>
   );
